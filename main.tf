@@ -29,7 +29,7 @@ resource "linode_instance" "linode_instance" {
   }
 
   provisioner "file" {
-    source      = "config/Caddyfile"
+    source      = var.rancher_instances[count.index].caddyfile_path
     destination = "Caddyfile"
   }
 
@@ -93,6 +93,7 @@ variable "rancher_instances" {
     url : string,
     linode_instance_label : string,
     linode_set_system_hostname : string,
+    caddyfile_path : string,
   }))
   description = "Rancher instances is a list/array of objects. Each object creates a Linode instance and AWS Route53 record."
 }
