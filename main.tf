@@ -14,6 +14,9 @@ provider "linode" {
 
 resource "linode_instance" "linode_instance" {
 
+  # Count checks the length of how many objects are in the
+  # array of Rancher instances. A linode instance gets created
+  # for every object in the array.
   count     = length(var.rancher_instances)
   label     = var.rancher_instances[count.index].linode_instance_label
   image     = "linode/ubuntu20.04"
@@ -21,6 +24,9 @@ resource "linode_instance" "linode_instance" {
   type      = "g6-standard-4"
   root_pass = var.linode_ssh_root_password
 
+  # Connection is occuring with ssh root password.
+  # this makes it easier so there isn't ssh key clutter.
+  # And since these Linode instances are short lived.
   connection {
     type     = "ssh"
     user     = "root"
@@ -28,11 +34,14 @@ resource "linode_instance" "linode_instance" {
     host     = one(self.ipv4)
   }
 
+  # Provisioner is selecting a Caddyfile path for every Rancher instance object
+  # in the Rancher instances array. You'll need a Caddyfile for each object.
   provisioner "file" {
     source      = var.rancher_instances[count.index].caddyfile_path
     destination = "Caddyfile"
   }
 
+  # Caddy script running so there are TLS certificates generated.
   provisioner "file" {
     source      = "scripts/caddy.sh"
     destination = "caddy.sh"
@@ -84,9 +93,11 @@ variable "rancher_bootstrap_password" {
 
 # - Variable Shared Across Rancher, Linode, and AWS
 # ---- rancher_version is injected into the docker run command to set the version of Rancer you want to use.
-# ---- url
+# ---- url is the full TLD domain name that you want to use.
 # ---- linode_instance_label is what the Linode instance is named.
 # ---- linode_set_system_hostname sets the Linode instance hostname, making it easy to know where you are when using ssh.
+# ---- caddyfile_path is where your caddyfile for each Linode / TLD URL resides.
+# TODO: Having multiple Caddyfiles isn't DRY. Need to clean this up. But it's working.
 variable "rancher_instances" {
   type = list(object({
     rancher_version : string,
