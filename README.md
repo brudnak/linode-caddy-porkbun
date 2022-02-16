@@ -49,7 +49,7 @@ reverse_proxy 0.0.0.0:9000
 # Variable Section
 
 # Linode Specific Variables
-linode_access_token      = "generate-a-linode-token-from-their-website-enter-it-here
+linode_access_token      = "generate-a-linode-token-from-their-website-enter-it-here"
 linode_ssh_root_password = "whatever-ssh-password-you-want"
 
 # Rancher Specific Variables within Linode
