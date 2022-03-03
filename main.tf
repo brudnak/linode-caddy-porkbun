@@ -67,7 +67,7 @@ resource "linode_instance" "linode_instance" {
 
 output "linode_instance_ip_addresses" {
   value = [
-    for linode_instance in linode_instance.linode_instance : "Linode IP address incase you need to SSH into it: ${linode_instance.ip_address}"
+    for linode_instance in linode_instance.linode_instance : "Linode IP address: ${linode_instance.ip_address} Label: ${linode_instance.label}"
   ]
 }
 
